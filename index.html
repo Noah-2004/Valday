@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love is Dangerous</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(black, #1a0000);
+    color: white;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    margin-top: 10px;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    color: crimson;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px red; }
+    to { text-shadow: 0 0 25px crimson; }
+}
+
+.main-image {
+    width: 200px;
+    border-radius: 20px;
+    margin: 20px 0;
+    box-shadow: 0 0 20px red;
+    transition: 0.3s;
+}
+
+.main-image:hover {
+    transform: scale(1.05);
+}
+
+button {
+    padding: 12px 25px;
+    background: crimson;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: 0.3s;
+    margin: 5px;
+    position: relative;
+}
+
+button:hover {
+    background: darkred;
+    transform: scale(1.05);
+}
+
+#hiddenMessage {
+    margin-top: 25px;
+    font-size: 22px;
+    color: pink;
+    min-height: 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    transform: rotate(45deg);
+    animation: floatUp 4s linear forwards;
+    z-index: 0;
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+}
+
+.heart::before {
+    top: -10px;
+    left: 0;
+}
+
+.heart::after {
+    left: 10px;
+    top: 0;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+    100% { transform: translateY(800px) rotate(45deg); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>CLICK ON THE BUTTON</h1>
+
+    <img src="noah.png" class="main-image">
+
+    <br>
+
+    <button onclick="firstClick()">Click me if you're there</button>
+
+    <p id="hiddenMessage"></p>
+</div>
+
+<audio id="bgMusic">
+    <source src="marry.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ---------- Typing effect function ----------
+function typeText(element, text, speed = 50, callback) {
+    element.innerHTML = "";
+    let i = 0;
+    const interval = setInterval(() => {
+        element.innerHTML += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+            clearInterval(interval);
+            if (callback) callback();
+        }
+    }, speed);
+}
+
+// ---------- Step 1 ----------
+function firstClick() {
+    const message = document.getElementById("hiddenMessage");
+    typeText(message, "I Dare You Click", 50, () => {
+        message.innerHTML = `<button onclick="secondClick()">I Dare You Click</button>`;
+    });
+}
+
+// ---------- Step 2 ----------
+function secondClick() {
+    const message = document.getElementById("hiddenMessage");
+    const music = document.getElementById("bgMusic");
+    music.play();
+
+    typeText(message, "I love you ❤️ Will you marry me?", 50, () => {
+        message.innerHTML = `
+            <p>I love you ❤️</p>
+            <p>Will you marry me?</p>
+            <button id="yesBtn">Yes 💍</button>
+            <button id="noBtn">No 😭</button>
+        `;
+        document.getElementById("noBtn").addEventListener("mouseover", moveNoButton);
+        document.getElementById("yesBtn").addEventListener("click", finalMessage);
+    });
+}
+
+// ---------- Runaway No button ----------
+function moveNoButton() {
+    const btn = document.getElementById("noBtn");
+    const container = btn.parentElement;
+    const maxX = container.offsetWidth - btn.offsetWidth - 50;
+    const maxY = container.offsetHeight - btn.offsetHeight - 50;
+
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+
+    btn.style.position = "absolute";
+    btn.style.left = randomX + "px";
+    btn.style.top = randomY + "px";
+}
+
+// ---------- Final message + hearts ----------
+function finalMessage() {
+    const message = document.getElementById("hiddenMessage");
+    typeText(message, "😂 I’m just kidding! Happy Valentine’s Day ❤️", 50);
+
+    // Explosion hearts
+    for (let i = 0; i < 30; i++) createHeart();
+}
+
+// ---------- Create one heart ----------
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = Math.random() * window.innerHeight + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 4000);
+}
+
+// ---------- Continuous heart rain ----------
+setInterval(() => {
+    createHeart();
+}, 300);
+
+</script>
+
+</body>
+</html>
